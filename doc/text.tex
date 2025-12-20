@@ -2,29 +2,29 @@
 % !TeX root = MAIN.tex
 
 \section{Introduction}
-ToDo
+\subsection{Description}
+	Minesweeper is a popular puzzle video game.
+	The game features a grid of $x \times y$ tiles. Hidden throughout that field are multiple mines which the player needs to avoid. The game ends in a win if the player manages to clear all fields without detonating a single bomb.
 	
-\section{Procedure}
-\subsection{Unit \& Settings}
-ToDo
+	Each tile within the grid can be either unopened, opened or flagged. Unopened tiles are blank and can be opened. Players are able to flag a cell to denote a possible mine location. Flagged cells are marked with a flag symbol on the grid and still considered as unopened.
 	
-\subsection{Material}
-ToDo
+	Selecting a cell opens it. An open cell can either be a mine, which immediately ends the game and results in failure, a number that indicates the amount of mines that are horizontally, vertically or diagonally adjacent to it, or blank, in which case all non-mine cells neighbouring it well be revealed.
 	
-\subsection{Process}
-ToDo
+	A game of Minesweeper begins by opening a cell. While playing, increasingly more information about the grid becomes known to the player which further aids in deducing the next safe cell to open. Furthermore, the remaining amount of mines is given to the player. The mine count is calculated by subtracting the total number of mines by the number of flagged cells, thus also allowing the mine count to be negative. 
 	
-\subsection{Evaluation}
-ToDo	
+	To win at Minesweeper, the player has to clear all non-mine cells without opening a mine. There isn't a score count or time limit, however players' time to finish is being measured. Difficulty can be increased by adding more mines or starting with a larger game field.
 	
-	
-\section{Results}
-ToDo
-	
-	
-\section{Discussion}
-ToDo
+	% image source: https://www.gamepro.de/galerien/minesweeper,136622.html
+	% consider using an image with a more open license
+	% or create your own screenshot
+	\begin{figure}[tp]
+		\centering
+		\includegraphics[width=\textwidth]{_img/minesweeper_game}
+		\caption{A game of Minesweeper}
+		\label{fig:game}
+	\end{figure}
+\subsection{Motivation}	
 
-	
-\section{Conclusion}
-ToDo
+\section{Minesweeper is in NP}
+
+\section{Reduction to 3-SAT}
