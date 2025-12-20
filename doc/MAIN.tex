@@ -1,0 +1,150 @@
+% !TeX encoding = UTF-8
+% !TeX program = pdflatex
+% !BIB program = biber
+
+% Template Revision:
+% Rev. C2 -- 2021-05-11 -- Ali Varli
+% Rev. C1 -- 2021-03-22 -- Ali Varli
+% Rev. B1 -- 2019-11-05 -- Ali Varli
+
+%% HINWEISE:
+%% MAIN.tex ist die Hauptdatei. Hier sind sämtliche Pakete eingebunden und die allgemeine Struktur ist hier festgelegt. Im Allgemeinen müssen hier keine Änderungen vorgenommen werden.
+%% In der eingebundenen Datei config.tex müssen Änderungen vorgenommen werden, die in der Datei näher erläutert sind.
+%% Das Deckblatt wird mit der Datei cover/coversheet.tex eingebunden. Hier sollten keine Änderungen vorgenommen werden.
+%% Für die Arbeit selbst ist die Datei text.tex vorgesehen.
+%% Das Literaturverzeichnis ist die eingebundene Datei literature.bib.
+%% Für Verbesserungsvorschläge bin ich gerne offen.
+%% Viel Erfolg :). Linz, im Oktober 2019, Ali Varli, a_v@gmx.net.
+
+%% PLEASE NOTE:
+%% MAIN.tex is the main file. All packages are pooled here and the general structure is defined here. In general, no changes need to be made here.
+%% Changes must be made In the included file config.tex. Detailed information is in the file.
+%% The cover page is included with the file cover/coversheet.tex. No changes should be made here.
+%% The file text.tex is intended for the work itself.
+%% The bibliography is the included file literature.bib.
+%% I am open to suggestions for improvement.
+%% Good luck :-). Linz, October 2019, Ali Varli, a_v@gmx.net.
+
+\documentclass[%
+	a4paper,
+	11pt,
+	BCOR=10mm,
+	DIV=12,
+	headinclude,
+	headheight=16mm,
+	oneside,
+	onecolumn,
+	parskip=half,
+	% appendixprefix,
+	toc=sectionentrywithdots,
+	% toc=flat,
+	table,
+	fleqn,
+	% draft
+]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+
+\input{config}
+
+\usepackage[T1]{fontenc}
+\usepackage{helvet,mathpazo}
+\usepackage{microtype}
+\ifeng
+	\usepackage[ngerman,english]{babel}
+\else
+	\usepackage[english,ngerman]{babel}
+\fi
+\usepackage[absolute]{textpos}
+\usepackage{amsmath,siunitx}
+\usepackage[%
+	backend=biber,
+	style=numeric-comp, % authoryear
+	bibstyle=numeric, % authoryear
+	citestyle=numeric, % authoryear
+	% maxcitenames=2,
+	sorting=none, %nty
+	backref=true,
+	backrefstyle=none
+]{biblatex}
+\addbibresource{literature.bib}
+\usepackage{csquotes}
+\usepackage{lastpage,scrlayer-scrpage}
+\pagestyle{scrheadings}
+\clearpairofpagestyles
+
+\ifeng
+	\ohead*{\includegraphics[width=3cm]{cover/jkuen.png}}
+\else
+	\ohead*{\includegraphics[width=3cm]{cover/jkude.png}}
+\fi
+
+\ifoot*{\date}
+\cfoot*{\author}
+\ofoot*{\pagemark/\pageref{LastPage}}
+
+\setkomafont{pageheadfoot}{\sffamily\scriptsize}
+\setkomafont{pagenumber}{\sffamily\scriptsize}
+
+\usepackage[onehalfspacing]{setspace}
+\usepackage{pdfpages}
+\usepackage{booktabs,colortbl,xcolor}
+\usepackage{graphicx,wrapfig}
+\usepackage[section]{placeins} %\FloatBarrier
+\usepackage{float} %[H]
+\usepackage{enumitem}
+\usepackage{subfiles}
+\usepackage{multicol}
+\usepackage[%
+	bookmarksnumbered=true,
+	pdfborder={0 0 0},
+	pdfa,
+	pdftitle={\pdfTitle},
+	pdfauthor={\pdfAuthor},
+	pdfsubject={\pdfSubject},
+	pdfkeywords={\pdfKeywords}
+]{hyperref}
+
+% \setcounter{tocdepth}{3} %subsubsection
+% \setcounter{secnumdepth}{3}
+
+\tolerance=300
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
+% \addtocontents{toc}{\protect\enlargethispage{2\normalbaselineskip}}
+% \addtocontents{lof}{\protect\enlargethispage{2\normalbaselineskip}}
+% \addtocontents{lot}{\protect\enlargethispage{2\normalbaselineskip}}
+
+\addtokomafont{caption}{\small}
+\setkomafont{captionlabel}{\small\sffamily\bfseries}
+
+%
+%%
+%%%%
+%%%%%%%%
+%%%%%%%%%%%%%%%%
+\begin{document}
+%%%%%%%%%%%%%%%%
+
+\begin{titlepage}
+	\setcounter{page}{0}
+	\include{cover/coversheet}
+\end{titlepage}
+
+\BeforeStartingTOC{\begin{multicols}{2}}
+\AfterStartingTOC{\end{multicols}}
+{
+	\singlespacing
+	\tableofcontents
+}
+
+\input{text}
+
+\printbibliography
+
+%%%%%%%%%
+\appendix
+
+\end{document}
