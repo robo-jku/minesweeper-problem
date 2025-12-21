@@ -2,7 +2,8 @@
 % !TeX root = MAIN.tex
 
 \section{Introduction}
-\subsection{Description}
+\subsection{Game Description \& Rules}
+	\label{sec:desc}
 	Minesweeper is a popular puzzle video game.
 	The game features a grid of $x \times y$ tiles. Hidden throughout that field are multiple mines which the player needs to avoid. The game ends in a win if the player manages to clear all fields without detonating a single bomb.
 	
@@ -14,13 +15,15 @@
 	
 	To win at Minesweeper, the player has to clear all non-mine cells without opening a mine. There isn't a score count or time limit, however players' time to finish is being measured. Difficulty can be increased by adding more mines or starting with a larger game field.
 	
+	After establishing the game rules and restrictions, we define our language \textbf{MSWP}: A field is in \textbf{MSWP} if there exists a layout of bombs such that the game field is valid.
+	
 	% image source: https://www.gamepro.de/galerien/minesweeper,136622.html
 	% src: wikipedia
 	% consider using an image with a more open license
 	% or create your own screenshot
 	\begin{figure}[tp]
 		\centering
-		\includegraphics[width=0.7\textwidth, keepaspectratio]{_img/minesweeper_game}
+		\fbox{\includegraphics[width=0.7\textwidth, keepaspectratio]{_img/minesweeper_game}}
 		\caption{A game of Minesweeper}
 		\label{fig:game}
 	\end{figure}
@@ -32,6 +35,68 @@
 
 	To win at Minesweeper, players have to use logical reasoning to deduce which fields are safe and which are not. Such principals and strategies perfectly align with the subject matter covered in the lecture.
 	
-\section{Minesweeper is in NP}
+\section{NP membership of Minesweeper}
+	In this section of the paper we want to show that \textbf{MSWP} is in the problem class NP. So there exists a short certificate and a verifier that accepts that certificate in at most polynomial time. If that is the case, then our language is complete. If the verifier also rejects assignment which are not part of the language, then it is sound aswell. Both of these requirements need to be fulfil in order for our language to be part of NP. Therefore we need to find the afore mentioned short certificate and verifier.
+	
+\subsection{Alphabet \& Notation}
+	First of all we introduce an alphabet that will help us later with the verification. The alphabet encodes all possible values a cell within the game field may have. A cell could be number $n$ without zero (same behaviour as in Minesweeper), be blank (defined here as $0$), have a predefined bomb, an input-dependent bomb, an input-dependent safe cell, a variable (unopened cell) or a cell without a value. Basically we define $\alpha = \{n, 0, cdot, \textcolor{red}{cdot}, \textcolor{red}{cross}, \textcolor{green}{?}, \textcolor{green}{.}\}$.
+	
+	As the following chapters will frequently use the alphabet in multiple figures, we created a reference table for the readers' convenience.
+	
+	\begin{longtable}{|c|c|}\hline
+		\centering
+		\textbf{Symbole} & \textbf{Definition} \\ \hline
+		$n$ & Denotes how many bombs are in the neighbourhood of cell \\ \hline
+		$0$ & Blank cell \\ \hline
+		$\cdot$ & predefined bombs \\ \hline
+		\textcolor{red}{$\cdot$} & input-dependent bomb \\ \hline
+		\textcolor{red}{$\times$} & input-dependent safe cell \\ \hline
+		\textcolor{green}{?} & value of variable (can be true: \textcolor{red}{$\times$} or false: \textcolor{red}{$\cdot$}) \\ \hline
+		\textcolor{green}{.} & cell without value (can become \textcolor{red}{$\times$} or \textcolor{red}{$\cdot$}) \\ \hline
+	\end{longtable}
+
+\subsection{Evaluation}
+	The method to compute our Minesweeper field into a logical formula goes as such:
+	\begin{itemize}
+		\item We divide the game field into rows and columns
+		\item We form clauses via the rows, by going from left to right
+		\item We compute variables by going from top to bottom for each column
+		\item To aid with our computation, we use the help of multiple components which alter the input stream of our rows and columns
+	\end{itemize} 
+
+\subsection{Components}
+	\textbf{Input Stream} This input stream goes for top to bottom and evaluates each variable (\textcolor{green}{?} and \textcolor{green}{.}) and sets its according value (\textcolor{red}{$\times$} or \textcolor{red}{$\cdot$})
+	
+	\textbf{Clause Stream} Checks if a specified variable within a clause is true, if at least one literal satisfies the clause
+	
+	\textbf{Crossing} For checking the diagonals of a given cell. A clause does not use a variable and the stream doesn't change. Computing an incorrect possible assignment yields an incorrect result.
+	
+	\textbf{OR} A simple disjunction of the input stream of the clause and the variable input stream. The clause becomes true if it either was already true or the current literal is true.
+	
+	\textbf{Splitter} This takes a variable input stream and splits it into two outputs with the same value. This is primarily used to aid us with the \textbf{OR} component, as otherwise we'd only have the disjunction of the clause and the literal, but this way we get to compute further compute the variable input stream and keep the calculation from the \textbf{OR} component. Thus we always use this before an \textbf{OR}.
+	
+	\textbf{Turn Stream} Turns a horizontal stream into a vertical one
+	
+	\textbf{Horizontal Offset Stream} Offsets the variable input stream horizontally
+	
+	\textbf{Vertical Offset Stream} Offsets the clause stream in the vertical direction. This is needed to read the negation of a variable.
+	
+	\textbf{Collector} Conjoins all Clauses into one. Should one clause be false, then the entire formula is false and we know that the given assignment/Minesweeper field is not valid.
+	
+	\textbf{End} Signifies the end of the variable input stream.
+	
+\subsection{Cost Calculation}
+	A SAT formula inside Minesweeper consists of $m$ number of clauses with $n$ amount of variables.
+
+	Via the previous example we can deduce:
+	\textbf{Bombs} $m \cdot (3 \cdot 98 + (n-3) \cdot 47) + n \cdot (4+4) + m \cdot (4+1)$. Each clause has to check three literals, all other variables not in the clause are not checked, thus we have to subtract them, Input and Output Size, Clause Start + Collector
+	
+	\textbf{Height} $4 + m \cdot 25 + 5$. Input Size, checked blocks, end size
+	
+	\textbf{Width} $4 + n \cdot 39 + 3$. Clause Start, checked blocks, Collector Size.
+	
+	Transforming a 3-SAT Problem to a Minesweeper Problem is possible and costs are P and not exponential. Thus Minesweeper is NP-complete.
+
+
 
 \section{Karp Reduction from 3-SAT}
