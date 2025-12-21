@@ -1,0 +1,9 @@
+Use the graphic tex files with
+
+\input{graphics/graphicname}
+
+in MAIN.tex.
+
+For this to work
+\usepackage{tikz}
+in MAIN.tex is needed.
