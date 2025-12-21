@@ -8,23 +8,30 @@
 	
 	Each tile within the grid can be either unopened, opened or flagged. Unopened tiles are blank and can be opened. Players are able to flag a cell to denote a possible mine location. Flagged cells are marked with a flag symbol on the grid and still considered as unopened.
 	
-	Selecting a cell opens it. An open cell can either be a mine, which immediately ends the game and results in failure, a number that indicates the amount of mines that are horizontally, vertically or diagonally adjacent to it, or blank, in which case all non-mine cells neighbouring it well be revealed.
+	Selecting a cell opens it. An open cell can either be a mine, which immediately ends the game and results in failure, a number that indicates the amount of mines that are horizontally, vertically or diagonally adjacent to it, or blank, in which case all non-mine cells neighbouring it will be revealed.
 	
 	A game of Minesweeper begins by opening a cell. While playing, increasingly more information about the grid becomes known to the player which further aids in deducing the next safe cell to open. Furthermore, the remaining amount of mines is given to the player. The mine count is calculated by subtracting the total number of mines by the number of flagged cells, thus also allowing the mine count to be negative. 
 	
 	To win at Minesweeper, the player has to clear all non-mine cells without opening a mine. There isn't a score count or time limit, however players' time to finish is being measured. Difficulty can be increased by adding more mines or starting with a larger game field.
 	
 	% image source: https://www.gamepro.de/galerien/minesweeper,136622.html
+	% src: wikipedia
 	% consider using an image with a more open license
 	% or create your own screenshot
 	\begin{figure}[tp]
 		\centering
-		\includegraphics[width=\textwidth]{_img/minesweeper_game}
+		\includegraphics[width=0.7\textwidth, keepaspectratio]{_img/minesweeper_game}
 		\caption{A game of Minesweeper}
 		\label{fig:game}
 	\end{figure}
-\subsection{Motivation}	
+	
+\subsection{Motivation}
+	Choosing Minesweeper as this project's topic was appealing for a multitude of reasons. The primary ones of this paper are wide-spread familiarity with the and the topic being well-suited to the Computational Complexity at JKU Linz.
+	
+	Since Minesweeper has been bundled with numerous operating systems, millions of users have become deeply acquainted with its gameplay. Thus this paper should be more accessible to readers of a non-technical background.
 
+	To win at Minesweeper, players have to use logical reasoning to deduce which fields are safe and which are not. Such principals and strategies perfectly align with the subject matter covered in the lecture.
+	
 \section{Minesweeper is in NP}
 
-\section{Reduction to 3-SAT}
+\section{Karp Reduction from 3-SAT}
