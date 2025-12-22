@@ -9,13 +9,13 @@
 	
 	Each tile within the grid can be either unopened, opened or flagged. Unopened tiles are blank and can be opened. Players are able to flag a cell to denote a possible mine location. Flagged cells are marked with a flag symbol on the grid and still considered as unopened.
 	
-	Selecting a cell opens it. An open cell can either be a mine, which immediately ends the game and results in failure, a number that indicates the amount of mines that are horizontally, vertically or diagonally adjacent to it, or blank, in which case all non-mine cells neighbouring it will be revealed.
+	Selecting a cell opens it. An open cell can either be a mine, which immediately ends the game and results in failure, a number that indicates the amount of mines that are horizontally, vertically or diagonally adjacent to it, or blank, in which case all non-mine cells neighbouring it will be revealed. A cell can have up to eight neighbours.
 	
 	A game of Minesweeper begins by opening a cell. While playing, increasingly more information about the grid becomes known to the player which further aids in deducing the next safe cell to open. Furthermore, the remaining amount of mines is given to the player. The mine count is calculated by subtracting the total number of mines by the number of flagged cells, thus also allowing the mine count to be negative. 
 	
 	To win at Minesweeper, the player has to clear all non-mine cells without opening a mine. There isn't a score count or time limit, however players' time to finish is being measured. Difficulty can be increased by adding more mines or starting with a larger game field.
 	
-	After establishing the game rules and restrictions, we define our language \textbf{MSWP}: A field is in \textbf{MSWP} if there exists a layout of bombs such that the game field is valid.
+	After establishing the game rules and restrictions, we define our language \textbf{MSWP}: A field is in \textbf{MSWP} if there exists a layout of bombs such that the game field is valid, i.e. the number in the game field correctly correspond to the amount of neighbouring bombs.
 	
 	% image source: https://www.gamepro.de/galerien/minesweeper,136622.html
 	% src: wikipedia
@@ -29,31 +29,108 @@
 	\end{figure}
 	
 \subsection{Motivation}
-	Choosing Minesweeper as this project's topic was appealing for a multitude of reasons. The primary ones of this paper are wide-spread familiarity with the and the topic being well-suited to the Computational Complexity at JKU Linz.
+	Choosing Minesweeper as this project's topic was appealing for a multitude of reasons. The primary ones of this paper are the wide-spread familiarity with the game and the topic being well-suited to the Computational Complexity lecture at JKU Linz.
 	
 	Since Minesweeper has been bundled with numerous operating systems, millions of users have become deeply acquainted with its gameplay. Thus this paper should be more accessible to readers of a non-technical background.
 
 	To win at Minesweeper, players have to use logical reasoning to deduce which fields are safe and which are not. Such principals and strategies perfectly align with the subject matter covered in the lecture.
 	
 \section{NP membership of Minesweeper}
-	In this section of the paper we want to show that \textbf{MSWP} is in the problem class NP. So there exists a short certificate and a verifier that accepts that certificate in at most polynomial time. If that is the case, then our language is complete. If the verifier also rejects assignment which are not part of the language, then it is sound aswell. Both of these requirements need to be fulfil in order for our language to be part of NP. Therefore we need to find the afore mentioned short certificate and verifier.
+	In this section of the paper we want to show that \textbf{MSWP} is in the problem class NP. So there exists a short certificate and a verifier that accepts that certificate in at most polynomial time. If that is the case, then our language is complete. If the verifier also rejects assignment which are not part of the language, then it is sound as well. Both of these requirements need to be fulfilled in order for our language to be part of NP.
+	
+\subsection{Encoding Minesweeper}
+	Because of the relative simplicity and structured rule set of Minesweeper, we can construct logical formula based on those rules.
+	
+	\paragraph{Input}
+	Because Minesweeper is played on a two-dimensional field, we have the game board width $n$ and height $m$. Furthermore we also have the number of bombs $b$ and the game board.
+	
+	\paragraph{Output}
+	We want to know if the given configuration is valid assignment of bombs.
+	
+	\paragraph{Certificate}
+	As bombs are the main focal point of Minesweeper, our certificate is the configuration of bombs within a game field. The verifier should thus be able to verify that the given configuration conforms to the rules of Minesweeper.
+	
+	\paragraph{Game Board Definition}
+	The effectively encode the game board, we assign a unique label $F_iX$ to each cell on the game board. $i$ is a natural number refers to a specific cell on the board. We start at the cell on the left-most upper corner of the game field and start counting up. $i \in \{1, \ldots, n \cdot m\}$.
+	
+	$X$ on the other hand specifies the amount of bombs that surround the current cell $F_i$. $X$ ranges from $0$ to $9$, however we have chosen $9$ to mean that a bomb is placed on that specific position. $X \in \{\underbrace{0,1,2,3,4,5,6,7,8}_{\text{neighbouring bombs}}, \underbrace{9}_{\text{bomb}}\}$.
+	
+	\paragraph{Neighbours}
+	As previously established, a cell can have up to $k=8$ neighbours.
+	We encode each neighbour of the current cell $F_i$ by $n_k$ where $k \in \{1, \ldots, 8\}$. Each $n_k$ has a truth value. If $n_k$ is true, then that neighbour is a bomb. If it is false, then the neighbour isn't a bomb. We introduce this for easier notation when iterating over the neighbours.
+	
+	\paragraph{Rule: Each field has at least one value}
+	$\mathop{\land}\limits_{i = 1}^{n \cdot m} (\mathop{\lor}\limits_{x=0}^{9} F_{ij}X)$
+	
+	\paragraph{Rule: Each field has at most one value}
+	$\mathop{\land}\limits_{i = 1}^{n \cdot m} \mathop{\lor}\limits_{0 \leq x_1 < x_2 \leq 9} (\overline{F_{ij}X_1} \lor \overline{F_{ij}X_2)}$
+	
+	\paragraph{Rule: Across the entire game board there are at least $b$ bombs}
+	$j = n \cdot m - b + 1$
+	$ \binom{n \cdot m}{j}$ clauses
+	$j$ literals each
+	
+	$\mathop{\land}\limits_{1 \leq i_1 < i_2 < \ldots < ij \leq n \cdot m} (F_{i1}9 \lor F_{i2}9 \lor \ldots \lor F_{ij}9)$
+	
+	\paragraph{Rule: Across the entire game board there are at most $b$ bombs}
+	$ \binom{n \cdot m}{b+1}$ clauses
+	$b+1$ literals each
+	
+	$\mathop{\land}\limits_{1 \leq i_1 < i_2 < \ldots < ib < ib+1 \leq n \cdot m} (\overline{F_{i1}9} \lor \overline{F_{i2}9} \lor \ldots \lor \overline{F_{ib}9} \lor \overline{F_{ib+1}9})$
+	
+	\paragraph{Rule: if a field has value 0, then no neighbours are a bomb}
+	$n \cdot m \cdot 8$ clauses
+	$2$ literals each
+	
+	$\mathop{\land}\limits_{i = 1}^{n \cdot m} \mathop{\land}\limits_{k = 1}^{8} (\overline{F_{i}0} \lor \overline{n_k})$
+	
+	\paragraph{Rule: if a field has value $z$, then exactly $z$ neighbours are bombs}
+	$1 \leq z \leq 7$
+	
+	\textbf{at least $z$ bombs}:
+	
+	$j = 8 - z + 1$
+	
+	$\mathop{\land}\limits_{i = 1}^{n \cdot m} \mathop{\land}\limits_{1 \leq k_1 < k_2 < \ldots < kj \leq 8} (\overline{F_{i}X} \lor n_{k1} \lor \ldots \lor n_{kj})$
+	
+	$n \cdot m \cdot \binom{8}{j}$ clauses
+	
+	$j+1$ literals each
+	
+	\textbf{at most $z$ bombs}:
+	
+	$j = z + 1$
+	
+	$\mathop{\land}\limits_{i = 1}^{n \cdot m} \mathop{\land}\limits_{1 \leq k_1 < k_2 < \ldots < kj \leq 8} (\overline{F_{i}X} \lor \overline{n_{k1}} \lor \ldots \lor \overline{n_{kj}})$
+	
+	$n \cdot m \cdot \binom{8}{j}$ clauses
+	
+	$j+1$ literals each
+	
+	\paragraph{Rule: if a field has value 8, then all neighbours are a bombs}
+	$n \cdot m \cdot 8$ clauses
+	$2$ literals each
+	
+	$\mathop{\land}\limits_{i = 1}^{n \cdot m} \mathop{\land}\limits_{k = 1}^{8} (\overline{F_{i}8} \lor n_k)$
+	
 	
 \subsection{Alphabet \& Notation}
-	First of all we introduce an alphabet that will help us later with the verification. The alphabet encodes all possible values a cell within the game field may have. A cell could be number $n$ without zero (same behaviour as in Minesweeper), be blank (defined here as $0$), have a predefined bomb, an input-dependent bomb, an input-dependent safe cell, a variable (unopened cell) or a cell without a value. Basically we define $\alpha = \{n, 0, cdot, \textcolor{red}{cdot}, \textcolor{red}{cross}, \textcolor{green}{?}, \textcolor{green}{.}\}$.
+	First of all we introduce an alphabet that will help us later with the verification. The alphabet encodes all possible values a cell within the game field may have. A cell could be number $n$ without zero (same behaviour as in Minesweeper), be blank (defined here as $0$), have a predefined bomb, an input-dependent bomb, an input-dependent safe cell, a variable (unopened cell) or a cell without a value. Basically we define $\alpha = \{n, 0, \cdot, \textcolor{red}{\cdot}, \textcolor{red}{\times}, \textcolor{green}{?}, \textcolor{green}{.}\}$.
 	
 	As the following chapters will frequently use the alphabet in multiple figures, we created a reference table for the readers' convenience.
 	
-	\begin{longtable}{|c|c|}\hline
-		\centering
-		\textbf{Symbole} & \textbf{Definition} \\ \hline
-		$n$ & Denotes how many bombs are in the neighbourhood of cell \\ \hline
-		$0$ & Blank cell \\ \hline
+	\begin{longtable}{|c|c|} \hline
+		\rowcolor{cyan}\textbf{Symbole} & \textbf{Definition} \\ \hline
+		$n$ & denotes how many bombs are in the neighbourhood of cell \\ \hline
+		$0$ & blank cell \\ \hline
 		$\cdot$ & predefined bombs \\ \hline
 		\textcolor{red}{$\cdot$} & input-dependent bomb \\ \hline
 		\textcolor{red}{$\times$} & input-dependent safe cell \\ \hline
 		\textcolor{green}{?} & value of variable (can be true: \textcolor{red}{$\times$} or false: \textcolor{red}{$\cdot$}) \\ \hline
 		\textcolor{green}{.} & cell without value (can become \textcolor{red}{$\times$} or \textcolor{red}{$\cdot$}) \\ \hline
+		\caption{Notation Table} \label{tbl:notation}
 	\end{longtable}
+	
 
 \subsection{Evaluation}
 	The method to compute our Minesweeper field into a logical formula goes as such:
@@ -65,30 +142,42 @@
 	\end{itemize} 
 
 \subsection{Components}
-	\textbf{Input Stream} This input stream goes for top to bottom and evaluates each variable (\textcolor{green}{?} and \textcolor{green}{.}) and sets its according value (\textcolor{red}{$\times$} or \textcolor{red}{$\cdot$})
+	\paragraph{\textsc{\textbf{Input Stream}}}
+	This input stream goes from top to bottom and evaluates each variable (\textcolor{green}{?} and \textcolor{green}{.}) and sets its according value (\textcolor{red}{$\times$} or \textcolor{red}{$\cdot$}). (See Table \ref{tbl:notation})
 	
-	\textbf{Clause Stream} Checks if a specified variable within a clause is true, if at least one literal satisfies the clause
+	\paragraph{\textsc{\textbf{Clause Stream}}}
+	Represent a clause within our formula. It starts out as false. When we encounter a variable we check its truth value. If it evaluates to true, then our clause becomes true. Should the variable be false, but the clauses previous state be true, then the clause still becomes true.
+	So we use a logical or on the clause itself and the variable in the input stream $\underbrace{(x \lor y \lor \ldots)}_{\text{Clause}} \lor x$.
 	
-	\textbf{Crossing} For checking the diagonals of a given cell. A clause does not use a variable and the stream doesn't change. Computing an incorrect possible assignment yields an incorrect result.
+	In simple terms: The Clause Stream "carries" the state of the clause from left to right, and as soon as an input satisfies the clause, the clause becomes true for the remainder of the stream.
 	
-	\textbf{OR} A simple disjunction of the input stream of the clause and the variable input stream. The clause becomes true if it either was already true or the current literal is true.
 	
-	\textbf{Splitter} This takes a variable input stream and splits it into two outputs with the same value. This is primarily used to aid us with the \textbf{OR} component, as otherwise we'd only have the disjunction of the clause and the literal, but this way we get to compute further compute the variable input stream and keep the calculation from the \textbf{OR} component. Thus we always use this before an \textbf{OR}.
+	\paragraph{\textsc{\textbf{Crossing}}}
+	This is used when the clause stream and input stream meet. This component causes for the variable in the Input Stream to be ignored by the Clause Stream, i.e. the Clause Stream will not use the variable. The Clause Stream and Input Stream remain unchanged.
 	
-	\textbf{Turn Stream} Turns a horizontal stream into a vertical one
+	\paragraph{\textsc{\textbf{Or}}}
+	A simple disjunction of the input stream of the clause and the variable input stream. The clause becomes true if it either was already true or the current literal is true. Functionally identical to a logical OR-Gate.
 	
-	\textbf{Horizontal Offset Stream} Offsets the variable input stream horizontally
+	\paragraph{\textsc{\textbf{Splitter}}}
+	This takes a variable input stream and splits it into two outputs with the same value. This is primarily used to aid us with the \textsc{\textbf{Or}} component, as otherwise we'd only have the disjunction of the clause and the literal, but this way we get to compute further compute the variable input stream and keep the calculation from the \textsc{\textbf{Or}} component. Thus we always use this before an \textsc{\textbf{Or}}.
 	
-	\textbf{Vertical Offset Stream} Offsets the clause stream in the vertical direction. This is needed to read the negation of a variable.
+	\paragraph{\textsc{\textbf{Turn Stream}}}
+	Turns a horizontal stream into a vertical one. Needed as some components stop computing the pure input stream, but as we often still need to further process the input stream, we use this component.
 	
-	\textbf{Collector} Conjoins all Clauses into one. Should one clause be false, then the entire formula is false and we know that the given assignment/Minesweeper field is not valid.
+	\paragraph{\textsc{\textbf{Horizontal/Vertical Offset Stream}}}
+	Offsets the variable input stream horizontally or vertically. We introduce this component as we often need to align the input stream after certain operations and as the input stream only repeats on every third cell.
 	
-	\textbf{End} Signifies the end of the variable input stream.
+	\paragraph{\textsc{\textbf{Collector}}}
+	This component signifies the end of a clause. All collectors have to evaluate to true, as otherwise the formula will not be satisfiable and the game field will thus also be inconsistant.
+	
+	\paragraph{\textsc{\textbf{End}}}
+	Signifies the end of the variable input stream.
 	
 \subsection{Cost Calculation}
 	A SAT formula inside Minesweeper consists of $m$ number of clauses with $n$ amount of variables.
 
 	Via the previous example we can deduce:
+	
 	\textbf{Bombs} $m \cdot (3 \cdot 98 + (n-3) \cdot 47) + n \cdot (4+4) + m \cdot (4+1)$. Each clause has to check three literals, all other variables not in the clause are not checked, thus we have to subtract them, Input and Output Size, Clause Start + Collector
 	
 	\textbf{Height} $4 + m \cdot 25 + 5$. Input Size, checked blocks, end size
