@@ -1,0 +1,37 @@
+\begin{tikzpicture}
+\usetikzlibrary {matrix}
+\usetikzlibrary{calc}
+    \newcommand{\greenDot}{
+        \fill[color=green!70!black] circle (2pt);
+    }
+    \newcommand{\blackDot}{
+        \fill[color=black] circle (4pt);
+    }
+  \matrix (M) [
+  matrix of nodes,nodes={anchor=center}
+]
+  {
+   &&&1&1&1&1&1&&&\\
+   1&1&1&2&\blackDot&3&\blackDot&2&1&1&1\\
+   1&\greenDot&\greenDot&3&\greenDot&5&\greenDot&3&\greenDot&\greenDot&1\\
+   1&1&1&2&\blackDot&3&\blackDot&2&1&1&1\\
+   &&&1&1&1&1&1&&&\\
+   &&&&&&&&&&&&{}\\
+   1&1&1&1&1&1&1&1&1&1&\\
+   1&\greenDot&\greenDot&1&\greenDot&\greenDot&1&\greenDot&\greenDot&1&\\
+   1&1&1&1&1&1&1&1&1&1&\\
+  };
+\draw[thick, color=green!70!black, <-] (M-3-1.west) -- ++(-1,0) node[anchor=east] (labelWest) {A};
+\draw[thick, color=green!70!black, ->] (M-3-11.east) -- ++(1,0) node[anchor=west] (labelEast) {A};
+
+\draw[thick, color=red] (M-2-11.north west) -- (M-2-11.south west);
+\draw[thick, color=red] (M-4-11.north west) -- (M-4-11.south west);
+
+\draw[thick, color=green!70!black] ($(labelWest) + (-0.2,1.2)$) rectangle ($(labelEast) + (0.2,-1.2)$);
+
+\draw[thick, color=red] (M-7-10.north east) -- (M-7-10.south east);
+\draw[thick, color=red] (M-9-10.north east) -- (M-9-10.south east);
+
+\draw[thick, color=red, <-] (M.south) -- ++(0,-0.5) node[anchor=north] {comparison: no offset};
+
+\end{tikzpicture}
