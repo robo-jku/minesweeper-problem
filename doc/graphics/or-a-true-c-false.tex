@@ -1,0 +1,39 @@
+\begin{tikzpicture}
+\usetikzlibrary {matrix}
+   \newcommand{\redDot}{
+        \fill[color=red] circle (4pt);
+    }
+    \newcommand{\redX}{
+        \node[color=red] {X};
+    }
+    \newcommand{\blackDot}{
+        \fill[color=black] circle (4pt);
+    }
+  \matrix[
+  matrix of nodes,nodes={anchor=center}
+]
+  {
+    &&&&1&1&1&&&&&&&&&\\
+    
+    &&&&1&\redX&1&&&&&&&&&\\
+    
+    &&&&1&\redDot&1&&1&2&3&2&1&&&\\
+    
+    &&&1&2&3&2&1&1&\blackDot&\blackDot&\blackDot&1&&&\\
+    
+    1&1&1&2&\blackDot&\redX&\blackDot&2&2&3&\redX&3&2&1&1&1\\
+    
+    1&\redDot&\redX&3&\redDot&6&\redDot&\redX&1&\redDot&2&\redDot&1&\redX&\redDot&1\\
+
+    1&1&1&2&\blackDot&\redX&\blackDot&5&4&3&\redX&2&2&1&1&1\\
+
+    &&&2&4&\blackDot&\blackDot&\blackDot&\blackDot&\blackDot&4&\blackDot&1&&&\\
+    
+    &&&2&\blackDot&\redDot&\redDot&\redX&\redDot&\redDot&\blackDot&3&1&&&\\
+
+    &&&2&\blackDot&\blackDot&3&2&3&\blackDot&\blackDot&2&&&&\\
+    &&&1&2&2&1&&1&2&2&1&&&&\\
+  };
+  
+
+\end{tikzpicture}
