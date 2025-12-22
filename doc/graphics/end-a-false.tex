@@ -1,0 +1,26 @@
+\begin{tikzpicture}
+\usetikzlibrary {matrix}
+       \newcommand{\redDot}{
+        \fill[color=red] circle (4pt);
+    }
+    \newcommand{\redX}{
+        \node[color=red] {X};
+    }
+    \newcommand{\blackDot}{
+        \fill[color=black] circle (4pt);
+    }
+  \matrix (M) [
+  matrix of nodes,nodes={anchor=center}
+]
+  {
+    &1&1&1&\\
+    &1&\redDot&1&\\
+    &1&\redX&1&\\
+    &1&1&1&\\
+    &1&\redDot&1&\\
+    1&3&\redX&3&1\\
+    1&\blackDot&\blackDot&\blackDot&1\\
+    1&2&3&2&1\\
+  };
+
+\end{tikzpicture}
