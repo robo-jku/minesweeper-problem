@@ -1,0 +1,28 @@
+\begin{tikzpicture}
+\usetikzlibrary {matrix}
+   \newcommand{\redDot}{
+        \fill[color=red] circle (4pt);
+    }
+    \newcommand{\redX}{
+        \node[color=red] {X};
+    }
+    \newcommand{\blackDot}{
+        \fill[color=black] circle (4pt);
+    }
+  \matrix (M) [
+  matrix of nodes,nodes={anchor=center}
+]
+  {
+    1&1&1&1&1&1\\
+    \redDot&\redX&1&\redDot&\redX&1\\
+    1&1&1&1&1&1\\
+  };
+\node[color=green!70!black, yshift=-10] at (M.south) {valid};
+
+  \fill[blue!15,semitransparent, rounded corners]
+    (M-1-6.north west)
+    rectangle
+    (M-3-6.south east);
+
+\draw[thick, color=red, ->] (M.east) -- ++(1,0) node[anchor=west, text width=3cm] {don't have bomb, board invalid!};
+\end{tikzpicture}

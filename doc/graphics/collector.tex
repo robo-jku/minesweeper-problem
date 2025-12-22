@@ -1,0 +1,19 @@
+\begin{tikzpicture}
+\usetikzlibrary {matrix}
+   \newcommand{\greenDot}{
+        \fill[color=green!70!black] circle (2pt);
+    }
+    \newcommand{\blackDot}{
+        \fill[color=black] circle (4pt);
+    }
+  \matrix (M) [
+  matrix of nodes,nodes={anchor=center}
+]
+  {
+    1&1&1\\ 
+    \greenDot & \greenDot &1\\
+    1&1&1\\
+  };
+
+  \draw[thick, color=green!70!black, <-] (M.west) -- ++(-1,0) node[anchor=east] {C};
+\end{tikzpicture}
