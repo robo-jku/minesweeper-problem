@@ -2,16 +2,16 @@
 % !TeX root = MAIN.tex
 
 \section{Introduction}
-\subsection{Game Description \& Rules}
+\subsection{Game Description}
 	\label{sec:desc}
 	Minesweeper is a popular puzzle video game.
-	The game features a grid of $x \times y$ tiles. Hidden throughout that field are multiple mines which the player needs to avoid. The game ends in a win if the player manages to clear all fields without detonating a single bomb.
+	The game features a grid of $x \times y$ tiles. Hidden throughout that field are multiple mines which the player needs to avoid. The game ends in a win if the player manages to clear all fields without detonating a single bomb. (\cite{Minesweeper})
 	
-	Each tile within the grid can be either unopened, opened or flagged. Unopened tiles are blank and can be opened. Players are able to flag a cell to denote a possible mine location. Flagged cells are marked with a flag symbol on the grid and still considered as unopened.
+	Each tile within the grid can be either unopened, opened or flagged. Unopened tiles are blank and can be opened. Players are able to flag a cell to denote a possible mine location. Flagged cells are marked with a flag symbol on the grid and still considered as unopened. (\cite{Minesweeper})
 	
-	Selecting a cell opens it. An open cell can either be a mine, which immediately ends the game and results in failure, a number that indicates the amount of mines that are horizontally, vertically or diagonally adjacent to it, or blank, in which case all non-mine cells neighbouring it will be revealed. A cell can have up to eight neighbours.
+	Selecting a cell opens it. An open cell can either be a mine, which immediately ends the game and results in failure, a number that indicates the amount of mines that are horizontally, vertically or diagonally adjacent to it, or blank, in which case all non-mine cells neighbouring it will be revealed. A cell can have up to eight neighbours. (\cite{Minesweeper})
 	
-	A game of Minesweeper begins by opening a cell. While playing, increasingly more information about the grid becomes known to the player which further aids in deducing the next safe cell to open. Furthermore, the remaining amount of mines is given to the player. The mine count is calculated by subtracting the total number of mines by the number of flagged cells, thus also allowing the mine count to be negative. 
+	A game of Minesweeper begins by opening a cell. While playing, increasingly more information about the grid becomes known to the player which further aids in deducing the next safe cell to open. Furthermore, the remaining amount of mines is given to the player. The mine count is calculated by subtracting the total number of mines by the number of flagged cells, thus also allowing the mine count to be negative. (\cite{Minesweeper})
 	
 	To win at Minesweeper, the player has to clear all non-mine cells without opening a mine. There isn't a score count or time limit, however players' time to finish is being measured. Difficulty can be increased by adding more mines or starting with a larger game field.
 	
@@ -36,7 +36,7 @@
 	To win at Minesweeper, players have to use logical reasoning to deduce which fields are safe and which are not. Such principals and strategies perfectly align with the subject matter covered in the lecture.
 	
 \section{NP membership of Minesweeper}
-	In this section of the paper we want to show that \textbf{MSWP} is in the problem class \textbf{NP}. So there exists a short certificate and a verifier that accepts that certificate in at most polynomial time. If that is the case, then our language is complete. If the verifier also rejects assignment which are not part of the language, then it is sound as well. Both of these requirements need to be fulfilled in order for our language to be part of \textbf{NP}.
+	In this section of the paper we want to show that \textbf{MSWP} is in the problem class \textbf{NP}. So there exists a short certificate and a verifier that accepts that certificate in at most polynomial time. If that is the case, then our language is complete. If the verifier also rejects assignment which are not part of the language, then it is sound as well (\cite{lecture}). Both of these requirements need to be fulfilled in order for our language to be part of \textbf{NP}.
 	
 	For Minesweeper specifically we have to consider a placement of $b$ on the game field $G$, such that every numbered cell correctly indicates the number of adjacent bombs (see section \ref{sec:rules} for all rules that need to be fulfilled).
 	
@@ -73,79 +73,142 @@
 	
 \subsection{Game Rules} \label{sec:rules}
 	\paragraph{Rule: Each field has at least one value}
-	$\mathop{\land}\limits_{i = 1}^{n \cdot m} (\mathop{\lor}\limits_{x=0}^{9} F_{i}X)$
 	
-	\paragraph{Rule: Each field has at most one value}
-	$\mathop{\land}\limits_{i = 1}^{n \cdot m} \mathop{\land}\limits_{0 \leq x_1 < x_2 \leq 9} (\overline{F_{ij}X_1} \lor \overline{F_{ij}X_2)}$
+	{\Large
+		\begin{center}
+			$\mathop{\bigwedge}\limits_{i = 1}^{n \cdot m} (\mathop{\bigvee}\limits_{x=0}^{9} F_{i}X)$
+		\end{center}
+	}	
 	
-	\paragraph{Rule: Across the entire game board there are at least $b$ bombs}
-	$j = n \cdot m - b + 1$
+	\paragraph{Rule: each field has at most one value}
 	
-	$ \binom{n \cdot m}{j}$ clauses - $j$ literals each
+	{\Large
+		\begin{center}
+			$\mathop{\bigwedge}\limits_{i = 1}^{n \cdot m} \ \mathop{\bigwedge}\limits_{0 \leq x_1 < x_2 \leq 9} \ (\overline{F_{ij}X_1} \lor \overline{F_{ij}X_2)}$
+		\end{center}	
+	}
+
 	
-	$\mathop{\land}\limits_{1 \leq i_1 < i_2 < \ldots < ij \leq n \cdot m} (F_{i1}9 \lor F_{i2}9 \lor \ldots \lor F_{ij}9)$
+	\paragraph{Rule: across the entire game board there are at least $b$ bombs}
 	
-	\paragraph{Rule: Across the entire game board there are at most $b$ bombs}
-	$ \binom{n \cdot m}{b+1}$ clauses - $b+1$ literals each
+	\begin{center}
+		$j = n \cdot m - b + 1$ \\
+		$\binom{n \cdot m}{j} \text{ clauses}$ \\
+		$j \text{ literals each}$
+	\end{center}
 	
-	$\mathop{\land}\limits_{1 \leq i_1 < i_2 < \ldots < ib < ib+1 \leq n \cdot m} (\overline{F_{i1}9} \lor \overline{F_{i2}9} \lor \ldots \lor \overline{F_{ib}9} \lor \overline{F_{ib+1}9})$
+	{\Large
+		\begin{center}
+			$\mathop{\land}\limits_{1 \leq i_1 < i_2 < \ldots < ij \leq n \cdot m} \ (F_{i1}9 \lor F_{i2}9 \lor \ldots \lor F_{ij}9)$
+		\end{center}
+	}
 	
+	\paragraph{Rule: across the entire game board there are at most $b$ bombs}
+	
+	\begin{center}
+		$ \binom{n \cdot m}{b+1}$ clauses \\
+		$b+1$ literals each
+	\end{center}
+	
+	{\Large
+		\begin{center}
+			$\mathop{\bigwedge}\limits_{1 \leq i_1 < i_2 < \ldots < ib < ib+1 \leq n \cdot m} \ (\overline{F_{i1}9} \lor \overline{F_{i2}9} \lor \ldots \lor \overline{F_{ib}9} \lor \overline{F_{ib+1}9})$
+		\end{center}
+	}
+
 	\paragraph{Rule: if a field has value 0, then no neighbours are a bomb}
-	$n \cdot m \cdot 8$ clauses - $2$ literals each
 	
-	$\mathop{\land}\limits_{i = 1}^{n \cdot m} \mathop{\land}\limits_{k = 1}^{8} (\overline{F_{i}0} \lor \overline{n_k})$
+	\begin{center}
+		$n \cdot m \cdot 8$ clauses \\
+		$2$ literals each	
+	\end{center}
+	
+	{\Large
+		\begin{center}
+			$\mathop{\bigwedge}\limits_{i = 1}^{n \cdot m} \ \mathop{\bigwedge}\limits_{k = 1}^{8} \ (\overline{F_{i}0} \lor \overline{n_k})$
+		\end{center}
+	}
 	
 	\paragraph{Rule: if a field has value $z$, then exactly $z$ neighbours are bombs}
-	$1 \leq z \leq 7$
+	
+	\begin{center}
+		$1 \leq z \leq 7$
+	\end{center}
+	
 	
 	\textbf{at least $z$ bombs}:
 	
-	$j = 8 - z + 1$
+	\begin{center}
+		$j = 8 - z + 1$ \\
+		$n \cdot m \cdot \binom{8}{j}$ clauses \\
+		$j+1$ literals each
+	\end{center}
 	
-	$\mathop{\land}\limits_{i = 1}^{n \cdot m} \mathop{\land}\limits_{1 \leq k_1 < k_2 < \ldots < kj \leq 8} (\overline{F_{i}X} \lor n_{k1} \lor \ldots \lor n_{kj})$
-	
-	$n \cdot m \cdot \binom{8}{j}$ clauses
-	
-	$j+1$ literals each
+	{\Large
+		\begin{center}
+			$\mathop{\bigwedge}\limits_{i = 1}^{n \cdot m} \ \mathop{\bigwedge}\limits_{1 \leq k_1 < k_2 < \ldots < kj \leq 8} \ (\overline{F_{i}X} \lor n_{k1} \lor \ldots \lor n_{kj})$
+		\end{center}
+	}
 	
 	\textbf{at most $z$ bombs}:
 	
-	$j = z + 1$
+	\begin{center}
+		$j = z + 1$ \\ 
+		$n \cdot m \cdot \binom{8}{j}$ clauses \\ 
+		$j+1$ literals each
+	\end{center}
 	
-	$\mathop{\land}\limits_{i = 1}^{n \cdot m} \mathop{\land}\limits_{1 \leq k_1 < k_2 < \ldots < kj \leq 8} (\overline{F_{i}X} \lor \overline{n_{k1}} \lor \ldots \lor \overline{n_{kj}})$
-	
-	$n \cdot m \cdot \binom{8}{j}$ clauses
-	
-	$j+1$ literals each
+	{\Large
+		\begin{center}
+			$\mathop{\bigwedge}\limits_{i = 1}^{n \cdot m} \ \mathop{\bigwedge}\limits_{1 \leq k_1 < k_2 < \ldots < kj \leq 8} \ (\overline{F_{i}X} \lor \overline{n_{k1}} \lor \ldots \lor \overline{n_{kj}})$
+		\end{center}
+	}
 	
 	\paragraph{Rule: if a field has value 8, then all neighbours are a bombs}
-	$n \cdot m \cdot 8$ clauses
-	$2$ literals each
 	
-	$\mathop{\land}\limits_{i = 1}^{n \cdot m} \mathop{\land}\limits_{k = 1}^{8} (\overline{F_{i}8} \lor n_k)$
+	\begin{center}
+		$n \cdot m \cdot 8$ clauses \\
+		$2$ literals each \\
+	\end{center}
+	
+	{\Large
+		\begin{center}
+			$\mathop{\bigwedge}\limits_{i = 1}^{n \cdot m} \ \mathop{\bigwedge}\limits_{k = 1}^{8} \ (\overline{F_{i}8} \lor n_k)$
+		\end{center}
+	}
 	
 
 \section{Karp Reduction from 3-SAT}
 	\subsection{SAT $\leq_p$ MSWP}
-	To encode a \textbf{SAT} formula \textit{F} with \textit{n} variables and \textit{m} clauses into an instance of \textbf{MSWP} \textit{M}, we define following structures which function as building blocks. (see section \ref{sec:comp}).
+	To encode a \textbf{SAT} formula \textit{F} with \textit{n} variables and \textit{m} clauses into an instance of \textbf{MSWP} \textit{M}, we define structures which function as building blocks. (see section \ref{sec:comp}).
+	
+	The basic idea is to look closer at the rows and columns. Each row of the game board represents a clause, while each column is a stream of inputs and variables where we determine the value for each variable. Via these two stream and our defined components we construct a formula in CNF that is satisfiable if and only if there exists a layout of bombs such that the Minesweeper board is in a valid configuration.
+	
+	\begin{figure}[h!]
+		\centering
+		\scalebox{1.1}{\input{graphics/idea}}
+		\caption{Concept behind \textbf{MSWP} formula construction}
+		\label{fig:idea}
+	\end{figure} 
 
 	\subsection{Alphabet \& Notation}
 	First of all we introduce an alphabet that will help us later with the verification. The alphabet encodes all possible values a cell within the game field may have. A cell could be number $n$ without zero (same behaviour as in Minesweeper), be blank (defined here as $0$), have a predefined bomb, an input-dependent bomb, an input-dependent safe cell, a variable (unopened cell) or a cell without a value. Basically we define $\alpha = \{n, 0, \cdot, \textcolor{red}{\cdot}, \textcolor{red}{\times}, \textcolor{green}{?}, \textcolor{green}{\cdot}\}$.
 
 	As the following chapters will frequently use the alphabet in multiple figures, we created a reference table for the readers' convenience.
 
-	\begin{longtable}{|c|c|} \hline
-		\rowcolor{cyan}\textbf{Symbole} & \textbf{Definition} \\ \hline
-		$n$ & denotes how many bombs are in the neighbourhood of cell \\ \hline
-		$0$ & blank cell \\ \hline
-		$\cdot$ & predefined bombs \\ \hline
-		\textcolor{red}{$\cdot$} & input-dependent bomb \\ \hline
-		\textcolor{red}{$\times$} & input-dependent safe cell \\ \hline
-		\textcolor{green}{?} & value of variable (can be true: \textcolor{red}{$\times$} or false: \textcolor{red}{$\cdot$}) \\ \hline
-		\textcolor{green}{$\cdot$} & input-dependent cell (can become \textcolor{red}{$\times$} or \textcolor{red}{$\cdot$} depending on variable value) \\ \hline
+	\begin{table}
+		\begin{tabular}{|c|c|} \hline
+			\rowcolor{cyan}\textbf{Symbol} & \textbf{Definition} \\ \hline
+			$n$ & denotes how many bombs are in the neighbourhood of cell \\ \hline
+			$0$ & blank cell \\ \hline
+			\begin{tikzpicture}\fill[color=black] circle (4pt);\end{tikzpicture} & predefined bombs \\ \hline
+			\begin{tikzpicture}\fill[color=red] circle (4pt);\end{tikzpicture} & input-dependent bomb \\ \hline
+			\begin{tikzpicture}[baseline=(n.base)]\node[color=red] (n) {X};\end{tikzpicture} & input-dependent safe cell \\ \hline
+			\begin{tikzpicture}[baseline=(n.base)]\node[color=green!70!black] (n) {\textbf{?}};\end{tikzpicture} & value of variable (can be true: \begin{tikzpicture}[baseline=(n.base)]\node[color=red] (n) {X};\end{tikzpicture} or false: \begin{tikzpicture}\fill[color=red] circle (4pt);\end{tikzpicture}) \\ \hline
+			\begin{tikzpicture}\fill[color=green!70!black] circle (2pt);\end{tikzpicture} & input-dependent cell (can become \begin{tikzpicture}[baseline=(n.base)]\node[color=red] (n) {X};\end{tikzpicture} or \begin{tikzpicture}\fill[color=red] circle (4pt);\end{tikzpicture} depending on variable value) \\ \hline
+		\end{tabular}
 		\caption{Notation Table} \label{tbl:notation}
-\end{longtable}
-
+	\end{table}
 
 	\subsection{Evaluation}
 	The method to compute our Minesweeper field into a logical formula goes as such:
@@ -157,77 +220,248 @@
 	\end{itemize} 
 
 	\subsection{Components} \label{sec:comp}
-	\begin{center}
-		\include{graphics/idea}
-	\end{center}
 	
 	
 	\paragraph{\textsc{\textbf{Input Stream}}}
-	This input stream goes from top to bottom and evaluates each variable (\textcolor{green}{?} and \textcolor{green}{$\cdot$}) and sets its according value (\textcolor{red}{$\times$} or \textcolor{red}{$\cdot$}). (See Table \ref{tbl:notation})
+	This input stream goes from top to bottom and evaluates each variable (\begin{tikzpicture}[baseline=(n.base)]\node[color=green!70!black] (n) {\textbf{?}};\end{tikzpicture} and \begin{tikzpicture}\fill[color=green!70!black] circle (2pt);\end{tikzpicture}) and sets its according value (\begin{tikzpicture}[baseline=(n.base)]\node[color=red] (n) {X};\end{tikzpicture} or \begin{tikzpicture}\fill[color=red] circle (4pt);\end{tikzpicture}). (See Table \ref{tbl:notation})
+	
+	\begin{figure}[H]
+		\centering
+		\scalebox{0.8}{\input{graphics/input_stream_var}}
+
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\scalebox{0.6}{\input{graphics/input_stream_var_true}}
+			\caption*{(a) true input}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\scalebox{0.6}{\input{graphics/input_stream_var_false}}
+			\caption*{(b) false input}
+		\end{minipage}
+		
+		\caption{Input Stream}
+		\label{fig:inputstream}
+	\end{figure} 
 
 	\paragraph{\textsc{\textbf{Clause Stream}}}
 	Represent a clause within our formula. It starts out as false. When we encounter a variable we check its truth value. If it evaluates to true, then our clause becomes true. Should the variable be false, but the clause's previous state was true, then the clause still stays true.
 	So we use a logical or on the clause itself and the variable in the input stream $\underbrace{(x \lor y \lor \ldots)}_{\text{Clause}} \lor x$.
 
 	In simple terms: The Clause Stream "carries" the state of the clause from left to right, and as soon as an input satisfies the clause, the clause becomes true for the rest of the stream.
+	
+	\begin{figure}[H]
+		\centering
+		\scalebox{1.2}{\input{graphics/clause_stream}}
+		\caption{Clause Stream}
+		\label{fig:clausestream}
+	\end{figure} 
 
 	\paragraph{\textsc{\textbf{Crossing}}}
 	This is used when the Clause Stream and input stream meet, but the variable of the Input Stream is not part of the clause. This component causes for the variable in the Input Stream to be ignored by the Clause Stream, i.e. the Clause Stream will not use the variable. The Clause Stream and Input Stream remain unchanged.
-
-	\begin{center}
-		\input{graphics/crossing}
-	\end{center}
+	
+	\begin{figure}[H]
+		\centering
+		\scalebox{0.8}{\input{graphics/crossing}}
+		\caption{Crossing}
+		\label{fig:crossing}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tabular}{cc}
+			\scalebox{0.6}{\input{graphics/crossing-a-false-c-false}} &
+			\scalebox{0.6}{\input{graphics/crossing-a-true-c-false}} \\[1em]
+			\scalebox{0.6}{\input{graphics/crossing-a-false-c-true}} &
+			\scalebox{0.6}{\input{graphics/crossing-a-true-c-true}}
+		\end{tabular}
+		\caption{Every possible assignment Clause Stream and Input Stream within Crossing. From top-left to bottom right the options are (Input, Clause): (false, false), (true,false), (false, true), (true, true)}
+		\label{fig:crossingassignments}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\scalebox{0.7}{\input{graphics/crossing-example}}
+		\caption{Crossing Example}
+		\label{fig:crossingexample}
+	\end{figure}
+	
 
 	\paragraph{\textsc{\textbf{Or}}}
 	A simple disjunction of the input stream of the clause and the variable input stream. The clause becomes true if it either was already true or the current literal is true. Functionally identical to a logical OR-Gate.
+	
+	\begin{figure}[H]
+		\centering
+		\scalebox{0.75}{\input{graphics/or}}
+		\caption{Or}
+		\label{fig:or}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tabular}{cc}
+			\scalebox{0.6}{\input{graphics/or-a-false-c-false}} &
+			\scalebox{0.6}{\input{graphics/or-a-true-c-false}} \\[1em]
+			\scalebox{0.6}{\input{graphics/or-a-false-c-true}} &
+			\scalebox{0.6}{\input{graphics/or-a-true-c-true}}
+		\end{tabular}
+		\caption{Every possible assignment Clause Stream and Input Stream within Or. From top-left to bottom right the options are (Input, Clause): (false, false), (true,false), (false, true), (true, true)}
+		\label{fig:orassignments}
+	\end{figure}
 
 	\paragraph{\textsc{\textbf{Splitter}}}
 	This takes a variable input stream and splits it into two outputs with the same value. This is primarily used to aid us with the \textsc{\textbf{Or}} component, as otherwise we'd only have the disjunction of the clause and the literal, but this way we get to compute the variable input stream further and keep the calculation from the \textsc{\textbf{Or}} component. Thus we always use this before an \textsc{\textbf{Or}}.
+	
+	\begin{figure}[H]
+		\centering
+		\scalebox{0.6}{\input{graphics/splitter}}
+		
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\scalebox{0.5}{\input{graphics/splitter-a-true}}
+			\caption*{(a) true input}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\scalebox{0.5}{\input{graphics/splitter-a-false}}
+			\caption*{(b) false input}
+		\end{minipage}
+		
+		\caption{Splitter}
+		\label{fig:splitter}
+	\end{figure} 
 
 	\paragraph{\textsc{\textbf{Turn Stream}}}
-	Turns a horizontal stream into a vertical one. Needed as some components stop computing the pure input stream, but as we often still need to further process the input stream, we use this component. This module, alongside \textsc{\textbf{Splitter}}, is necessary when using the \textsc{\textbf{Or}} component. \textsc{\textbf{Turn Stream}} main functionality is that it brings both the Clause Stream and Input Stream together. Also the Crossing and \textsc{\textbf{Or}} components expect that the Input Stream is vertical.
+	Turns a horizontal stream into a vertical one. Needed as some components stop computing the pure input stream, but as we often still need to further process the input stream, we use this component. This module, alongside \textsc{\textbf{Splitter}}, is necessary when using the \textsc{\textbf{Or}} component. \textsc{\textbf{Turn Stream}} main functionality is that it brings both the \textsc{\textbf{Clause Stream}} and \textsc{\textbf{Input Stream}} together. Also the \textsc{\textbf{Crossing}} and \textsc{\textbf{Or}} components expect that the Input Stream is vertical.
+	
+	\begin{figure}[H]
+		\centering
+		\scalebox{0.6}{\input{graphics/turn_stream}}
+		\caption{Turn Stream}
+		\label{fig:turnstream}
+	\end{figure} 
 
 	\paragraph{\textsc{\textbf{Horizontal/Vertical Offset Stream}}}
-	Offsets the variable input stream horizontally or vertically. We introduce this component as we often need to align the input stream after certain operations and as the input stream only repeats on every third cell.
+	Offsets the variable \textsc{\textbf{Input Stream}} horizontally or vertically. We introduce this component as we often need to align the \textsc{\textbf{Input Stream}} after certain operations and as the input stream only repeats on every third cell.
+	
+	\begin{figure}[H]
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\scalebox{0.7}{\input{graphics/offset-stream-horizontal}}
+			\caption*{(a) horizontal offset}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\scalebox{0.7}{\input{graphics/offset-stream-vertical}}
+			\caption*{(b) vertical offset}
+		\end{minipage}
+		
+		\caption{Offset Stream}
+		\label{fig:offset}
+	\end{figure} 
 
 	\paragraph{\textsc{\textbf{Collector}}}
-	This component signifies the end of a clause. All collectors have to evaluate to true, as otherwise the formula will not be satisfiable and the game field will thus also be inconsistant.
+	This component signifies the end of a clause. All collectors have to evaluate to true, as otherwise the formula will not be satisfiable and the game field will thus also be inconsistent.
+	
+	\begin{figure}[H]
+		\centering
+		\scalebox{1.2}{\input{graphics/collector}}
+		
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\scalebox{0.8}{\input{graphics/collector-c-true}}
+			\caption*{(a) true clause}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\scalebox{0.8}{\input{graphics/collector-c-false}}
+			\caption*{(b) false clause}
+		\end{minipage}
+		
+		\caption{Collector}
+		\label{fig:collector}
+	\end{figure} 
 
 	\paragraph{\textsc{\textbf{End}}}
-	Signifies the end of the variable input stream.
+	Signifies the end of the variable \textsc{\textbf{Input Stream}}.
+	
+	\begin{figure}[H]
+		\centering
+		\scalebox{0.8}{\input{graphics/end}}
+		
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\scalebox{0.8}{\input{graphics/end-a-true}}
+			\caption*{(a) true clause}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.48\textwidth}
+			\centering
+			\scalebox{0.8}{\input{graphics/end-a-false}}
+			\caption*{(b) false clause}
+		\end{minipage}
+		
+		\caption{End}
+		\label{fig:end}
+	\end{figure} 
 
 	\subsection{Constructing SAT Formula}
-	After explaining every component within our system, we want to use them to construct a SAT formula $\phi$. To do that we first take a look at the Input Stream. The Input Stream receives an input-dependent cell and then, depending on the value of the variable, we can determine if the input $x_i$ is a safe cell (true) or a bomb (false).
+	After explaining every component within our system, we want to use them to construct a CNF formula $\varphi$. We first define a function $f: \text{\textbf{SAT}} \rightarrow \text{\textbf{MSWP}}$ that maps $\varphi$ to a game of Minesweeper.
 	
-	Next up we analyse the Clause Stream. As defined in section \ref{sec:comp} the Clause Stream component determines if a clause evaluate to true or not, by analysing the next literal or by taking the clauses previous state. Clauses are intialised to \textit{false} by default.
+	To do that we first take a look at the \textsc{\textbf{Input Stream}}. The \textsc{\textbf{Input Stream}} receives an input-dependent cell and then, depending on the value of the variable, we can determine if the input $x_i$ is a safe cell (true) or a bomb (false).
 	
-	Finally each clause ends up in a Collector which enforces clauses to evaluate to true. (We achieve a similar feat to that of 8.7 of the lecture script, as we have broken a large formula up into the input, consistancy and termination parts).
+	Next up we analyse the \textsc{\textbf{Clause Stream}}. As defined in section \ref{sec:comp}, the \textsc{\textbf{Clause Stream}} component determines if a clause evaluate to true or not, by analysing the next literal or by taking the clauses previous state. Clauses are initialised to \textit{false} by default.
 	
-	As is immediately obvious, a constucted MSWP formula directly emulates a given SAT formula, from the literals to the clauses. Therefore any model of the formula in SAT directly corresponds to a model in MSWP (and vice versa).
+	Finally each clause ends up in a \textsc{\textbf{Collector}} which enforces clauses to evaluate to true. (We achieve a similar feat to that of 8.7 of the lecture script, as we have broken a large formula up into the input, consistancy and termination parts). As the size of the game board is the number of variables and clauses, the formula can be computed in polynomial time.
+	
+	As is immediately obvious, a constructed \textbf{MSWP} formula directly emulates a given \textbf{SAT} formula, from the literals to the clauses. Therefore any model of the formula in \textbf{SAT} directly corresponds to a model in \textbf{MSWP} (and vice versa) (\cite{MCWATER}).
 	
 	\subsection{3-SAT $\leq_p$ SAT}
-	To also show the reduction from 3-SAT, we will use the intermediate reduction to SAT, the
+	To also show the reduction from \textbf{3-SAT}, we will use the intermediate reduction to \textbf{SAT} (\cite{MCWATER}), the
 	language of satisfiable boolean formulas in CNF.
-	This relation is immediately obvious, as 3-SAT $\subset$ SAT.
-	For the Karp reduction we have f(x) = x and x $\in$ 3-SAT if and only if f(x) $\in$ SAT.
+	This relation is immediately obvious, as $\text{\textbf{3-SAT}} \subset \text{\textbf{SAT}}$.
+	For the Karp reduction we have $f(x) = x$ and $x \in \text{\textbf{3-SAT}} \iff f(x) \in \text{\textbf{SAT}}$.
 
 	\subsection{3-SAT $\leq_p$ MSWP}
 	Due to the transitivity of Karp reductions, we can combine the previous reductions
-	3-SAT $\leq_p$ SAT and SAT $\leq_p$ MSWP to conclude 3-SAT $\leq_p$ MSWP.
+	$\text{\textbf{3-SAT}} \leq_p \text{\textbf{SAT}}$ and $\text{\textbf{SAT}} \leq_p \text{\textbf{MSWP}}$ to conclude $\text{\textbf{3-SAT}} \leq_p \text{\textbf{MSWP}}$.
 	
 	\subsection{NP-hard \& NP-complete}
-	As shown, an arbitrary formula in 3-SAT can be converted to a world in MSWP in polynomial time. This proves that MSWP is NP-hard.
-	Together with the fact that we have proven that MSWP is in NP, we conclude that MSWP is NP-complete.
+	As shown, an arbitrary formula in \textbf{3-SAT} can be converted to an instance of \textbf{MSWP} in polynomial time. This proves that MSWP is \textbf{NP}-hard.
+	Together with the fact that we have proven that \textbf{MSWP} is in \textbf{NP}, we conclude that \textbf{MSWP} is \textbf{NP}-complete.
 
-	\subsection{Cost Calculation}
-	A SAT formula inside Minesweeper consists of $m$ number of clauses with $n$ amount of variables.
+	\subsection{Cost Calculation Example}
+	A \textbf{SAT} formula inside Minesweeper consists of $m$ number of clauses with $n$ amount of variables.
 
-	Via the previous example we can deduce:
+	If we take a $5 \times 4$ game field as an example, we can calculate the following:
 
-	\textbf{Bombs} $m \cdot (3 \cdot 98 + (n-3) \cdot 47) + n \cdot (4+4) + m \cdot (4+1)$. Each clause has to check three literals, all other variables not in the clause are not checked, thus we have to subtract them, Input and Output Size, Clause Start + Collector
+	\paragraph{\textbf{Bombs}} $m \cdot (3 \cdot 98 + (n-3) \cdot 47) + n \cdot (4+4) + m \cdot (4+1)$.
+	Each clause has to check three literals, all other variables not in the clause are not checked, thus we have to subtract them, Input and Output Size, Clause Start + Collector
 
-	\textbf{Height} $4 + m \cdot 25 + 5$. Input Size, checked blocks, end size
+	\paragraph{\textbf{Height}} $4 + m \cdot 25 + 5$. (Input Size, checked blocks, end size)
 
-	\textbf{Width} $4 + n \cdot 39 + 3$. Clause Start, checked blocks, Collector Size.
+	\paragraph{\textbf{Width}} $4 + n \cdot 39 + 3$. (Clause Start, checked blocks, Collector Size)
 
-	Transforming a 3-SAT Problem to a Minesweeper Problem is possible and costs are P and not exponential. Thus Minesweeper is NP-complete.
+	Transforming a 3-SAT Problem to a Minesweeper Problem is possible and costs are P and not exponential. Thus Minesweeper is \textbf{NP}-complete.
+
+	\appendix
+
+	\section{Indexes}
+	\listoffigures
+	\listoftables
+
+\section{Addendum}
+	This section is for interested readers who'd like to see how we derived this paper's contents.
+	
+	\subsection{Component Definition}
+	\includepdf{../proof/Minesweeper_Component-Definition}
+	
+	\subsection{Cost Calculations}
+	\includepdf{../proof/Minesweeper_Cost-Calculations}
+	
+	\subsection{Reduction to SAT}
+	\includepdf{../proof/Minesweeper_to_SAT_reduction}
